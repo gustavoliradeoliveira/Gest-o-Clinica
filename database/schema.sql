@@ -34,6 +34,18 @@ CREATE TABLE IF NOT EXISTS usuarios (
 );
 
 -- =============================================================
+-- TABELA: especialidades
+-- =============================================================
+CREATE TABLE IF NOT EXISTS especialidades (
+    id          SERIAL PRIMARY KEY,
+    nome        VARCHAR(150) NOT NULL UNIQUE,
+    descricao   TEXT,
+    ativo       BOOLEAN NOT NULL DEFAULT TRUE,
+    criado_em   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- =============================================================
 -- ÍNDICES
 -- =============================================================
 CREATE INDEX IF NOT EXISTS idx_usuarios_email      ON usuarios(email);
