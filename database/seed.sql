@@ -56,7 +56,7 @@ INSERT INTO usuarios (nome, email, senha, perfil_id) VALUES
 (
     'Administrador',
     'admin@clinica.com',
-    '$2a$10$jdbsAkKPlcYUCQ5DpaJmaemZZdRiZkQe6/VORdim6IfwZeabk8m2i',
+    '$2a$10$hXW5M1b6dsaCMmegpMJEH./JeJmT65G4RWZt8rmNhaAwwBEHZt.uG',
     (SELECT id FROM perfis WHERE nome = 'Administrador')
 )
 ON CONFLICT (email) DO UPDATE SET senha = EXCLUDED.senha;
