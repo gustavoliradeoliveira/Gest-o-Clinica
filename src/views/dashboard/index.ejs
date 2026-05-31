@@ -1,0 +1,112 @@
+<!-- Stats Row -->
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card">
+            <div class="stat-icon blue"><i class="bi bi-people-fill"></i></div>
+            <div>
+                <div class="stat-value"><%= stats.pacientes %></div>
+                <div class="stat-label">Pacientes Ativos</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card">
+            <div class="stat-icon green"><i class="bi bi-person-badge-fill"></i></div>
+            <div>
+                <div class="stat-value"><%= stats.medicos %></div>
+                <div class="stat-label">Médicos Ativos</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card">
+            <div class="stat-icon orange"><i class="bi bi-calendar-check-fill"></i></div>
+            <div>
+                <div class="stat-value"><%= stats.consultas %></div>
+                <div class="stat-label">Total de Consultas</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card">
+            <div class="stat-icon purple"><i class="bi bi-award-fill"></i></div>
+            <div>
+                <div class="stat-value"><%= stats.especialidades %></div>
+                <div class="stat-label">Especialidades</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <!-- Status das Consultas -->
+    <div class="col-lg-4">
+        <div class="card h-100">
+            <div class="card-header d-flex align-items-center gap-2">
+                <i class="bi bi-pie-chart-fill text-primary"></i>
+                <span>Status das Consultas</span>
+            </div>
+            <div class="card-body">
+                <%
+                    const statusMap = {
+                        agendada:   { label: 'Agendadas',   icon: 'bi-clock',            cls: 'badge-agendada' },
+                        confirmada: { label: 'Confirmadas', icon: 'bi-check-circle',      cls: 'badge-confirmada' },
+                        realizada:  { label: 'Realizadas',  icon: 'bi-check-circle-fill', cls: 'badge-realizada' },
+                        cancelada:  { label: 'Canceladas',  icon: 'bi-x-circle-fill',     cls: 'badge-cancelada' }
+                    };
+                %>
+                <% if (!statusConsultas.length) { %>
+                <p class="text-muted text-center py-3 mb-0">Nenhuma consulta registrada.</p>
+                <% } %>
+                <% statusConsultas.forEach(s => { const m = statusMap[s.status] || {}; %>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi <%= m.icon || 'bi-circle' %> fs-5 text-muted"></i>
+                        <span><%= m.label || s.status %></span>
+                    </div>
+                    <span class="badge <%= m.cls || '' %> px-3 py-2 rounded-pill fw-600">
+                        <%= s.total %>
+                    </span>
+                </div>
+                <% }) %>
+            </div>
+        </div>
+    </div>
+
+    <!-- Próximas Consultas -->
+    <div class="col-lg-8">
+        <div class="card h-100">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-calendar2-week-fill text-primary"></i>
+                    <span>Próximas Consultas</span>
+                </div>
+                <% if (usuario && usuario.permissoes && usuario.permissoes.consultas && usuario.permissoes.consultas.criar) { %>
+                <a href="/consultas/novo" class="btn btn-primary btn-sm">
+                    <i class="bi bi-plus-lg me-1"></i>Nova
+                </a>
+                <% } %>
+            </div>
+            <div class="card-body">
+                <% if (!proximasConsultas.length) { %>
+                <p class="text-muted text-center py-3 mb-0">Nenhuma consulta agendada.</p>
+                <% } %>
+                <% proximasConsultas.forEach(c => { %>
+                <div class="consulta-item">
+                    <div class="consulta-time">
+                        <div class="fw-600"><%= new Date(c.data_hora).toLocaleDateString('pt-BR') %></div>
+                        <div class="fs-sm"><%= new Date(c.data_hora).toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'}) %></div>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="fw-600 fs-sm"><%= c.paciente_nome %></div>
+                        <div class="text-muted fs-sm"><%= c.medico_nome %></div>
+                    </div>
+                    <span class="badge badge-<%= c.status %> rounded-pill px-2">
+                        <%= c.status %>
+                    </span>
+                </div>
+                <% }) %>
+            </div>
+        </div>
+    </div>
+</div>

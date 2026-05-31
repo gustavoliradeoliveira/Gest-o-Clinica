@@ -1,0 +1,54 @@
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="d-flex align-items-center gap-2 mb-4">
+            <a href="/usuarios" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i></a>
+            <h2 class="mb-0" style="font-size:1.1rem;font-weight:700;">Editar Usuário</h2>
+        </div>
+        <div class="card">
+            <div class="card-body p-4">
+                <form action="/usuarios/<%= usuario_edit.id %>" method="POST" id="form-edit-usuario">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="nome" class="form-label">Nome <span class="text-danger">*</span></label>
+                            <input type="text" id="nome" name="nome" class="form-control"
+                                   value="<%= usuario_edit.nome %>" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="email" class="form-label">E-mail <span class="text-danger">*</span></label>
+                            <input type="email" id="email" name="email" class="form-control"
+                                   value="<%= usuario_edit.email %>" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="senha" class="form-label">Nova Senha</label>
+                            <input type="password" id="senha" name="senha" class="form-control"
+                                   placeholder="Deixe em branco para manter">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="perfil_id" class="form-label">Perfil <span class="text-danger">*</span></label>
+                            <select id="perfil_id" name="perfil_id" class="form-select" required>
+                                <% perfis.forEach(p => { %>
+                                <option value="<%= p.id %>" <%= p.id === usuario_edit.perfil_id ? 'selected' : '' %>>
+                                    <%= p.nome %>
+                                </option>
+                                <% }) %>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Status</label>
+                            <select name="ativo" class="form-select" id="status-usuario">
+                                <option value="true"  <%= usuario_edit.ativo ? 'selected' : '' %>>Ativo</option>
+                                <option value="false" <%= !usuario_edit.ativo ? 'selected' : '' %>>Inativo</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary" id="btn-atualizar-usuario">
+                            <i class="bi bi-check-lg me-1"></i>Atualizar
+                        </button>
+                        <a href="/usuarios" class="btn btn-outline-secondary">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

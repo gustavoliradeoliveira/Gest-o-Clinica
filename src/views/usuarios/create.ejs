@@ -1,0 +1,49 @@
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="d-flex align-items-center gap-2 mb-4">
+            <a href="/usuarios" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i></a>
+            <h2 class="mb-0" style="font-size:1.1rem;font-weight:700;">Novo Usuário</h2>
+        </div>
+        <div class="card">
+            <div class="card-body p-4">
+                <% if (erros && erros.length) { %>
+                <div class="alert alert-danger">
+                    <% erros.forEach(e => { %><div><i class="bi bi-exclamation-circle me-1"></i><%= e.msg %></div><% }) %>
+                </div>
+                <% } %>
+                <form action="/usuarios" method="POST" id="form-create-usuario">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="nome" class="form-label">Nome <span class="text-danger">*</span></label>
+                            <input type="text" id="nome" name="nome" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="email" class="form-label">E-mail <span class="text-danger">*</span></label>
+                            <input type="email" id="email" name="email" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="senha" class="form-label">Senha <span class="text-danger">*</span></label>
+                            <input type="password" id="senha" name="senha" class="form-control"
+                                   minlength="6" placeholder="Mínimo 6 caracteres" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="perfil_id" class="form-label">Perfil <span class="text-danger">*</span></label>
+                            <select id="perfil_id" name="perfil_id" class="form-select" required>
+                                <option value="">Selecione...</option>
+                                <% perfis.forEach(p => { %>
+                                <option value="<%= p.id %>"><%= p.nome %></option>
+                                <% }) %>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary" id="btn-salvar-usuario">
+                            <i class="bi bi-check-lg me-1"></i>Salvar
+                        </button>
+                        <a href="/usuarios" class="btn btn-outline-secondary">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

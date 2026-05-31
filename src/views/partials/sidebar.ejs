@@ -1,0 +1,93 @@
+<aside class="sidebar" id="sidebar">
+
+    <!-- Brand -->
+    <a href="/dashboard" class="sidebar-brand">
+        <div class="sidebar-brand-icon">
+            <i class="bi bi-hospital"></i>
+        </div>
+        <div class="sidebar-brand-text">
+            <strong>Gestão Clínica</strong>
+            <small>Sistema Médico</small>
+        </div>
+    </a>
+
+    <!-- Navigation -->
+    <nav class="sidebar-nav">
+
+        <div class="sidebar-section">Visão Geral</div>
+        <a href="/dashboard" class="sidebar-link" id="nav-dashboard">
+            <i class="bi bi-grid-1x2-fill"></i> Dashboard
+        </a>
+
+        <% if (usuario && usuario.permissoes) { %>
+
+        <% if (usuario.permissoes.pacientes && usuario.permissoes.pacientes.ler) { %>
+        <div class="sidebar-section">Cadastros</div>
+        <% } %>
+
+        <% if (usuario.permissoes.pacientes && usuario.permissoes.pacientes.ler) { %>
+        <a href="/pacientes" class="sidebar-link">
+            <i class="bi bi-people-fill"></i> Pacientes
+        </a>
+        <% } %>
+
+        <% if (usuario.permissoes.medicos && usuario.permissoes.medicos.ler) { %>
+        <a href="/medicos" class="sidebar-link">
+            <i class="bi bi-person-badge-fill"></i> Médicos
+        </a>
+        <% } %>
+
+        <% if (usuario.permissoes.especialidades && usuario.permissoes.especialidades.ler) { %>
+        <a href="/especialidades" class="sidebar-link">
+            <i class="bi bi-award-fill"></i> Especialidades
+        </a>
+        <% } %>
+
+        <% if (usuario.permissoes.consultas && usuario.permissoes.consultas.ler) { %>
+        <div class="sidebar-section">Atendimento</div>
+        <a href="/consultas" class="sidebar-link">
+            <i class="bi bi-calendar-check-fill"></i> Consultas
+        </a>
+        <% } %>
+
+        <% if (usuario.permissoes.prontuarios && usuario.permissoes.prontuarios.ler) { %>
+        <a href="/prontuarios" class="sidebar-link">
+            <i class="bi bi-journal-medical"></i> Prontuários
+        </a>
+        <% } %>
+
+        <% if (usuario.permissoes.usuarios && usuario.permissoes.usuarios.ler) { %>
+        <div class="sidebar-section">Administração</div>
+        <a href="/usuarios" class="sidebar-link">
+            <i class="bi bi-person-gear"></i> Usuários
+        </a>
+        <% } %>
+
+        <% if (usuario.permissoes.perfis && usuario.permissoes.perfis.ler) { %>
+        <a href="/perfis" class="sidebar-link">
+            <i class="bi bi-shield-lock-fill"></i> Perfis de Acesso
+        </a>
+        <% } %>
+
+        <% } %>
+    </nav>
+
+    <!-- Footer -->
+    <div class="sidebar-footer">
+        <% if (usuario) { %>
+        <div class="sidebar-user">
+            <div class="sidebar-avatar">
+                <%= usuario.nome.charAt(0).toUpperCase() %>
+            </div>
+            <div class="sidebar-user-info">
+                <strong><%= usuario.nome.split(' ')[0] %></strong>
+                <small><%= usuario.perfil_nome %></small>
+            </div>
+        </div>
+        <% } %>
+        <a href="/logout" class="btn btn-outline-secondary btn-sm w-100">
+            <i class="bi bi-box-arrow-right me-1"></i> Sair
+        </a>
+    </div>
+
+</aside>

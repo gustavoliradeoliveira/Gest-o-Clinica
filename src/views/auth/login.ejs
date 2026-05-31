@@ -1,0 +1,44 @@
+
+<div class="login-wrapper">
+    <div class="login-card">
+        <div class="login-logo">
+            <i class="bi bi-hospital"></i>
+        </div>
+        <h2 class="text-center mb-1" style="font-size:1.4rem;font-weight:700;">Gestão Clínica</h2>
+        <p class="text-center text-muted mb-4" style="font-size:.85rem;">
+            Faça login para acessar o sistema
+        </p>
+
+        <% if (flashErro && flashErro.length) { %>
+        <div class="alert alert-danger d-flex align-items-center gap-2 py-2 mb-3" style="font-size:.85rem;">
+            <i class="bi bi-exclamation-triangle-fill"></i> <%= flashErro[0] %>
+        </div>
+        <% } %>
+
+        <form action="/login" method="POST" novalidate>
+            <div class="mb-3">
+                <label for="email" class="form-label">E-mail</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                    <input type="email" id="email" name="email" class="form-control"
+                           placeholder="admin@clinica.com" required autocomplete="email">
+                </div>
+            </div>
+            <div class="mb-4">
+                <label for="senha" class="form-label">Senha</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                    <input type="password" id="senha" name="senha" class="form-control"
+                           placeholder="••••••••" required autocomplete="current-password">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100" id="btn-login" style="font-weight:600;">
+                <i class="bi bi-box-arrow-in-right me-2"></i>Entrar
+            </button>
+        </form>
+
+        <p class="text-center text-muted mt-3 mb-0" style="font-size:.75rem;">
+            © <%= new Date().getFullYear() %> Gestão Clínica
+        </p>
+    </div>
+</div>

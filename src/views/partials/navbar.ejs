@@ -1,0 +1,25 @@
+<header class="topbar">
+    <div class="topbar-title d-flex align-items-center gap-3">
+        <button class="btn btn-sm btn-outline-secondary d-md-none" id="sidebarToggle">
+            <i class="bi bi-list"></i>
+        </button>
+        <div>
+            <h1><%= typeof titulo !== 'undefined' ? titulo : 'Página' %></h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item">
+                        <a href="/dashboard" class="text-decoration-none">Início</a>
+                    </li>
+                    <li class="breadcrumb-item active"><%= typeof titulo !== 'undefined' ? titulo : '' %></li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <% if (usuario) { %>
+        <span class="badge bg-light text-dark border fs-sm">
+            <i class="bi bi-person-circle me-1"></i><%= usuario.nome.split(' ')[0] %>
+        </span>
+        <% } %>
+    </div>
+</header>
