@@ -61,3 +61,19 @@ INSERT INTO usuarios (nome, email, senha, perfil_id) VALUES
 )
 ON CONFLICT (email) DO UPDATE SET senha = EXCLUDED.senha;
 
+-- =============================================================
+-- ESPECIALIDADES
+-- =============================================================
+INSERT INTO especialidades (nome, descricao) VALUES
+('Cardiologia',      'Diagnóstico e tratamento de doenças do coração'),
+('Dermatologia',     'Diagnóstico e tratamento de doenças da pele'),
+('Ortopedia',        'Diagnóstico e tratamento do sistema músculo-esquelético'),
+('Pediatria',        'Assistência médica a crianças e adolescentes'),
+('Neurologia',       'Diagnóstico e tratamento do sistema nervoso'),
+('Ginecologia',      'Saúde do sistema reprodutor feminino'),
+('Oftalmologia',     'Diagnóstico e tratamento de doenças dos olhos'),
+('Psiquiatria',      'Diagnóstico e tratamento de transtornos mentais'),
+('Endocrinologia',   'Diagnóstico e tratamento de distúrbios hormonais'),
+('Clínica Geral',    'Atenção primária à saúde')
+ON CONFLICT (nome) DO NOTHING;
+
