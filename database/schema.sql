@@ -50,3 +50,15 @@ CREATE TABLE IF NOT EXISTS especialidades (
 -- =============================================================
 CREATE INDEX IF NOT EXISTS idx_usuarios_email      ON usuarios(email);
 CREATE INDEX IF NOT EXISTS idx_usuarios_perfil_id  ON usuarios(perfil_id);
+
+-- =============================================================
+-- TABELA: medicos
+-- =============================================================
+CREATE TABLE IF NOT EXISTS medicos (
+  id SERIAL PRIMARY KEY,
+  nome VARCHAR(100) NOT NULL,
+  especialidade VARCHAR(100) NOT NULL,
+  crm VARCHAR(20) UNIQUE NOT NULL,
+  telefone VARCHAR(20),
+  status VARCHAR(10) DEFAULT 'Ativo'
+);
