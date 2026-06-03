@@ -1,0 +1,28 @@
+<h1>Lista de Médicos</h1>
+<table>
+  <tr>
+    <th>Nome</th>
+    <th>Especialidade</th>
+    <th>CRM</th>
+    <th>Telefone</th>
+    <th>Status</th>
+    <th>Ações</th>
+  </tr>
+  <% medicos.forEach(medico => { %>
+    <tr>
+      <td><%= medico.nome %></td>
+      <td><%= medico.especialidade %></td>
+      <td><%= medico.crm %></td>
+      <td><%= medico.telefone %></td>
+      <td><%= medico.status %></td>
+      <td>
+        <form action="/medicos/update/<%= medico._id %>" method="POST">
+          <button type="submit">Editar</button>
+        </form>
+        <form action="/medicos/delete/<%= medico._id %>" method="POST">
+          <button type="submit">Excluir</button>
+        </form>
+      </td>
+    </tr>
+  <% }) %>
+</table>
