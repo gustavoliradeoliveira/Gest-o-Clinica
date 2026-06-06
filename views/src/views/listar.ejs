@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Especialidades</title>
+</head>
+<body>
+
+    <h1>Lista de Especialidades</h1>
+
+    <a href="/especialidades/novo">
+        Nova Especialidade
+    </a>
+
+    <br><br>
+
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Descrição</th>
+            <th>Ações</th>
+        </tr>
+
+        <% especialidades.forEach(especialidade => { %>
+
+            <tr>
+                <td><%= especialidade.id %></td>
+                <td><%= especialidade.nome %></td>
+                <td><%= especialidade.descricao %></td>
+
+                <td>
+                    <a href="/especialidades/editar/<%= especialidade.id %>">
+                        Editar
+                    </a>
+
+                    |
+
+                    <a href="/especialidades/excluir/<%= especialidade.id %>">
+                        Excluir
+                    </a>
+                </td>
+            </tr>
+
+        <% }) %>
+
+    </table>
+
+</body>
+</html>

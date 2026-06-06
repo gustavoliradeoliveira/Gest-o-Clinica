@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Editar Especialidade</title>
+</head>
+<body>
+
+    <h1>Editar Especialidade</h1>
+
+    <form
+        action="/especialidades/editar/<%= especialidade.id %>"
+        method="POST"
+    >
+
+        <label>Nome:</label>
+        <br>
+
+        <input
+            type="text"
+            name="nome"
+            value="<%= especialidade.nome %>"
+            required
+        >
+
+        <br><br>
+
+        <label>Descrição:</label>
+        <br>
+
+        <input
+            type="text"
+            name="descricao"
+            value="<%= especialidade.descricao %>"
+        >
+
+        <br><br>
+
+        <button type="submit">
+            Atualizar
+        </button>
+
+    </form>
+
+    <br>
+
+    <a href="/especialidades">
+        Voltar
+    </a>
+
+</body>
+</html>
