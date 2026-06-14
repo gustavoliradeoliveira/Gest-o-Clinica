@@ -1,0 +1,39 @@
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="d-flex align-items-center gap-2 mb-4">
+            <a href="/especialidades" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left"></i>
+            </a>
+            <h2 class="mb-0" style="font-size:1.1rem;font-weight:700;">Nova Especialidade</h2>
+        </div>
+
+        <div class="card">
+            <div class="card-body p-4">
+                <% if (erros && erros.length) { %>
+                <div class="alert alert-danger">
+                    <% erros.forEach(e => { %><div><i class="bi bi-exclamation-circle me-1"></i><%= e.msg %></div><% }) %>
+                </div>
+                <% } %>
+
+                <form action="/especialidades" method="POST" novalidate id="form-create-especialidade">
+                    <div class="mb-3">
+                        <label for="nome" class="form-label">Nome <span class="text-danger">*</span></label>
+                        <input type="text" id="nome" name="nome" class="form-control"
+                               placeholder="Ex: Cardiologia" required maxlength="150">
+                    </div>
+                    <div class="mb-4">
+                        <label for="descricao" class="form-label">Descrição</label>
+                        <textarea id="descricao" name="descricao" class="form-control" rows="3"
+                                  placeholder="Descrição opcional..."></textarea>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary" id="btn-salvar-especialidade">
+                            <i class="bi bi-check-lg me-1"></i>Salvar
+                        </button>
+                        <a href="/especialidades" class="btn btn-outline-secondary">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
