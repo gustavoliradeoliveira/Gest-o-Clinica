@@ -1,3 +1,7 @@
+'use strict';
+
+const Especialidade = require('../models/Especialidade');
+
 const especialidadeController = {
     async index(req, res) {
         try {

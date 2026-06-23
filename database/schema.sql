@@ -46,19 +46,24 @@ CREATE TABLE IF NOT EXISTS especialidades (
 );
 
 -- =============================================================
+-- TABELA: medicos
+-- =============================================================
+CREATE TABLE IF NOT EXISTS medicos (
+    id              SERIAL PRIMARY KEY,
+    nome            VARCHAR(150) NOT NULL,
+    crm             VARCHAR(20) NOT NULL UNIQUE,
+    telefone        VARCHAR(20),
+    email           VARCHAR(200),
+    especialidade_id INTEGER REFERENCES especialidades(id) ON DELETE SET NULL,
+    ativo           BOOLEAN NOT NULL DEFAULT TRUE,
+    criado_em       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- =============================================================
 -- ÍNDICES
 -- =============================================================
 CREATE INDEX IF NOT EXISTS idx_usuarios_email      ON usuarios(email);
 CREATE INDEX IF NOT EXISTS idx_usuarios_perfil_id  ON usuarios(perfil_id);
 
--- =============================================================
--- TABELA: medicos
--- =============================================================
-CREATE TABLE IF NOT EXISTS medicos (
-  id SERIAL PRIMARY KEY,
-  nome VARCHAR(100) NOT NULL,
-  especialidade VARCHAR(100) NOT NULL,
-  crm VARCHAR(20) UNIQUE NOT NULL,
-  telefone VARCHAR(20),
-  status VARCHAR(10) DEFAULT 'Ativo'
-);
+
