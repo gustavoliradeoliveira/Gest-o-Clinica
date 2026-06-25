@@ -1,0 +1,72 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="mb-1" style="font-size:1.1rem;font-weight:700;">Pacientes</h2>
+        <p class="text-muted fs-sm mb-0"><%= total %> registro(s)</p>
+    </div>
+    <% if (usuario && usuario.permissoes && usuario.permissoes.pacientes && usuario.permissoes.pacientes.criar) { %>
+    <a href="/pacientes/novo" class="btn btn-primary btn-sm" id="btn-novo-paciente">
+        <i class="bi bi-plus-lg me-1"></i>Novo Paciente
+    </a>
+    <% } %>
+</div>
+
+<div class="card mb-3">
+    <div class="card-body py-2">
+        <form method="GET" action="/pacientes" class="d-flex gap-2 search-form">
+            <div class="input-group input-group-sm">
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                <input type="text" name="busca" class="form-control" placeholder="Buscar por nome ou CPF..."
+                       value="<%= busca || '' %>">
+            </div>
+            <button type="submit" class="btn btn-outline-primary btn-sm">Buscar</button>
+            <% if (busca) { %><a href="/pacientes" class="btn btn-outline-secondary btn-sm">Limpar</a><% } %>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr><th>#</th><th>Nome</th><th>CPF</th><th>Data Nasc.</th><th>Telefone</th><th>Status</th><th class="text-end">Ações</th></tr>
+            </thead>
+            <tbody>
+                <% if (!registros.length) { %>
+                <tr><td colspan="7" class="text-center text-muted py-4">
+                    <i class="bi bi-inbox fs-4 d-block mb-2"></i>Nenhum paciente encontrado.
+                </td></tr>
+                <% } %>
+                <% registros.forEach(p => { %>
+                <tr>
+                    <td class="text-muted fs-sm"><%= p.id %></td>
+                    <td><strong><%= p.nome %></strong></td>
+                    <td class="fs-sm"><%= p.cpf %></td>
+                    <td class="text-muted fs-sm"><%= new Date(p.data_nasc).toLocaleDateString('pt-BR') %></td>
+                    <td class="text-muted fs-sm"><%= p.telefone || '—' %></td>
+                    <td>
+                        <span class="badge <%= p.ativo ? 'badge-confirmada' : 'badge-cancelada' %> rounded-pill">
+                            <%= p.ativo ? 'Ativo' : 'Inativo' %>
+                        </span>
+                    </td>
+                    <td class="text-end">
+                        <% if (usuario.permissoes.pacientes && usuario.permissoes.pacientes.editar) { %>
+                        <a href="/pacientes/<%= p.id %>/editar" class="btn btn-outline-primary btn-sm me-1">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <% } %>
+                        <% if (usuario.permissoes.pacientes && usuario.permissoes.pacientes.deletar) { %>
+                        <form action="/pacientes/<%= p.id %>/deletar" method="POST"
+                              class="form-delete d-inline" data-nome="<%= p.nome %>">
+                            <button type="submit" class="btn btn-outline-danger btn-sm">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
+                        <% } %>
+                    </td>
+                </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+</div>
+<%- include('../partials/paginacao') %>

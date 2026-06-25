@@ -1,0 +1,50 @@
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="d-flex align-items-center gap-2 mb-4">
+            <a href="/prontuarios" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i></a>
+            <h2 class="mb-0" style="font-size:1.1rem;font-weight:700;">Editar Prontuário #<%= prontuario.id %></h2>
+        </div>
+
+        <!-- Info da Consulta -->
+        <div class="card mb-3 border-start border-primary border-3">
+            <div class="card-body py-2 d-flex gap-4 fs-sm">
+                <div><i class="bi bi-person me-1 text-muted"></i><strong><%= prontuario.paciente_nome %></strong></div>
+                <div><i class="bi bi-person-badge me-1 text-muted"></i><%= prontuario.medico_nome %></div>
+                <div><i class="bi bi-calendar me-1 text-muted"></i>
+                    <%= new Date(prontuario.data_hora).toLocaleDateString('pt-BR') %>
+                </div>
+                <div>
+                    <span class="badge badge-<%= prontuario.consulta_status %> rounded-pill px-2">
+                        <%= prontuario.consulta_status %>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body p-4">
+                <form action="/prontuarios/<%= prontuario.id %>" method="POST" id="form-edit-prontuario">
+                    <input type="hidden" name="consulta_id" value="<%= prontuario.consulta_id %>">
+                    <div class="mb-3">
+                        <label for="descricao" class="form-label">Descrição / Anamnese <span class="text-danger">*</span></label>
+                        <textarea id="descricao" name="descricao" class="form-control" rows="4" required><%= prontuario.descricao %></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="diagnostico" class="form-label">Diagnóstico</label>
+                        <textarea id="diagnostico" name="diagnostico" class="form-control" rows="3"><%= prontuario.diagnostico || '' %></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label for="prescricao" class="form-label">Prescrição</label>
+                        <textarea id="prescricao" name="prescricao" class="form-control" rows="3"><%= prontuario.prescricao || '' %></textarea>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary" id="btn-atualizar-prontuario">
+                            <i class="bi bi-check-lg me-1"></i>Atualizar
+                        </button>
+                        <a href="/prontuarios" class="btn btn-outline-secondary">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

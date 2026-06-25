@@ -1,0 +1,77 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="mb-1" style="font-size:1.1rem;font-weight:700;">Consultas</h2>
+        <p class="text-muted fs-sm mb-0"><%= total %> registro(s)</p>
+    </div>
+    <% if (usuario && usuario.permissoes && usuario.permissoes.consultas && usuario.permissoes.consultas.criar) { %>
+    <a href="/consultas/novo" class="btn btn-primary btn-sm" id="btn-nova-consulta">
+        <i class="bi bi-plus-lg me-1"></i>Nova Consulta
+    </a>
+    <% } %>
+</div>
+
+<div class="card mb-3">
+    <div class="card-body py-2">
+        <form method="GET" action="/consultas" class="d-flex gap-2 search-form">
+            <div class="input-group input-group-sm">
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                <input type="text" name="busca" class="form-control" placeholder="Buscar por paciente ou médico..."
+                       value="<%= busca || '' %>">
+            </div>
+            <button type="submit" class="btn btn-outline-primary btn-sm">Buscar</button>
+            <% if (busca) { %><a href="/consultas" class="btn btn-outline-secondary btn-sm">Limpar</a><% } %>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr><th>#</th><th>Paciente</th><th>Médico</th><th>Especialidade</th><th>Data/Hora</th><th>Status</th><th class="text-end">Ações</th></tr>
+            </thead>
+            <tbody>
+                <% if (!registros.length) { %>
+                <tr><td colspan="7" class="text-center text-muted py-4">
+                    <i class="bi bi-inbox fs-4 d-block mb-2"></i>Nenhuma consulta encontrada.
+                </td></tr>
+                <% } %>
+                <% registros.forEach(c => { %>
+                <tr>
+                    <td class="text-muted fs-sm"><%= c.id %></td>
+                    <td><strong><%= c.paciente_nome %></strong></td>
+                    <td class="fs-sm"><%= c.medico_nome %></td>
+                    <td class="text-muted fs-sm"><%= c.especialidade_nome || '—' %></td>
+                    <td class="fs-sm">
+                        <%= new Date(c.data_hora).toLocaleDateString('pt-BR') %>
+                        <span class="text-muted">
+                            <%= new Date(c.data_hora).toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'}) %>
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge badge-<%= c.status %> rounded-pill px-2">
+                            <%= c.status %>
+                        </span>
+                    </td>
+                    <td class="text-end">
+                        <% if (usuario.permissoes.consultas && usuario.permissoes.consultas.editar) { %>
+                        <a href="/consultas/<%= c.id %>/editar" class="btn btn-outline-primary btn-sm me-1">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <% } %>
+                        <% if (usuario.permissoes.consultas && usuario.permissoes.consultas.deletar) { %>
+                        <form action="/consultas/<%= c.id %>/deletar" method="POST"
+                              class="form-delete d-inline" data-nome="consulta #<%= c.id %>">
+                            <button type="submit" class="btn btn-outline-danger btn-sm">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
+                        <% } %>
+                    </td>
+                </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+</div>
+<%- include('../partials/paginacao') %>

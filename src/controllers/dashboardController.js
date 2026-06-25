@@ -1,11 +1,18 @@
 'use strict';
 
 const { query } = require('../models/db');
+const Consulta  = require('../models/Consulta');
 
 const dashboardController = {
     async index(req, res) {
         try {
-            
+            const [pacientes, medicos, consultas, especialidades, statusConsultas] = await Promise.all([
+                query('SELECT COUNT(*) FROM pacientes WHERE ativo = true'),
+                query('SELECT COUNT(*) FROM medicos WHERE ativo = true'),
+                query('SELECT COUNT(*) FROM consultas'),
+                query('SELECT COUNT(*) FROM especialidades WHERE ativo = true'),
+                Consulta.contarPorStatus()
+            ]);
 
             // Próximas consultas (agendadas/confirmadas)
             const proximasRes = await query(
@@ -24,13 +31,13 @@ const dashboardController = {
             res.render('dashboard/index', {
                 titulo: 'Dashboard',
                 stats: {
-                    pacientes:    0,
-                    medicos:      0,
-                    consultas:    0,
-                    especialidades: 0
+                    pacientes:    parseInt(pacientes.rows[0].count),
+                    medicos:      parseInt(medicos.rows[0].count),
+                    consultas:    parseInt(consultas.rows[0].count),
+                    especialidades: parseInt(especialidades.rows[0].count)
                 },
                 statusConsultas,
-                proximasConsultas: []
+                proximasConsultas: proximasRes.rows
             });
         } catch (err) {
             console.error('[Dashboard]', err.message);
