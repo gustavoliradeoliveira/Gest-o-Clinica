@@ -1,113 +1,94 @@
-'use strict';
+const path = require('path');
+const express = require('express');
+const session = require('express-session');
+const SQLiteStore = require('connect-sqlite3')(session);
+const methodOverride = require('method-override');
 
-require('dotenv').config();
+const db = require('./config/database');
+const { User, Note, Paciente } = require('./models');
+const indexRoutes = require('./routes/indexRoutes');
+const authRoutes = require('./routes/authRoutes');
+const noteRoutes = require('./routes/noteRoutes');
+const pacienteRoutes = require('./routes/pacienteRoutes');
 
-const express      = require('express');
-const path         = require('path');
-const session      = require('express-session');
-const pgSession    = require('connect-pg-simple')(session);
-const ejsLayouts   = require('express-ejs-layouts');
-const flash        = require('connect-flash');
-const { pool }     = require('./src/models/db');
-
-const indexRouter  = require('./src/routes/index');
-
-const app  = express();
+const app = express();
 const PORT = process.env.PORT || 3000;
 
-// =============================================================
-// VIEW ENGINE
-// =============================================================
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'src', 'views'));
-app.use(ejsLayouts);
-app.set('layout', 'layouts/main');  // layout padrão
-app.set('layout extractScripts', true);
-app.set('layout extractStyles', true);
+app.set('views', path.join(__dirname, 'views'));
 
-// =============================================================
-// MIDDLEWARES GLOBAIS
-// =============================================================
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.urlencoded({ extended: false }));
+app.use(methodOverride('_method'));
 
-// Arquivos estáticos
-app.use(express.static(path.join(__dirname, 'src', 'public')));
-
-// Sessão com store no PostgreSQL
-app.use(session({
-    store: new pgSession({
-        pool,
-        tableName: 'session',
-        createTableIfMissing: true
-    }),
-    secret:            process.env.SESSION_SECRET || 'gestao_clinica_secret',
-    resave:            false,
+app.use(
+  session({
+    store: new SQLiteStore({ db: 'sessions.sqlite', dir: path.join(__dirname, '..', 'data') }),
+    secret: 'meu-projeto-secreto',
+    resave: false,
     saveUninitialized: false,
-    cookie: {
-        secure:   false, // true em produção com HTTPS
-        httpOnly: true,
-        maxAge:   parseInt(process.env.SESSION_MAX_AGE) || 86400000
-    }
-}));
+    cookie: { maxAge: 1000 * 60 * 60 * 2 },
+  })
+);
 
-// Flash messages
-app.use(flash());
-
-// Variáveis locais globais para as views
 app.use((req, res, next) => {
-    res.locals.usuario       = req.session.usuario || null;
-    res.locals.flashSucesso  = req.flash('sucesso');
-    res.locals.flashErro     = req.flash('erro');
-    res.locals.flashInfo     = req.flash('info');
-    next();
+  res.locals.currentUser = req.session.user || null;
+  res.locals.error = req.session.error || null;
+  res.locals.success = req.session.success || null;
+  delete req.session.error;
+  delete req.session.success;
+  next();
 });
 
-// =============================================================
-// ROTAS
-// =============================================================
-app.use('/', indexRouter);
+app.use('/', indexRoutes);
+app.use('/auth', authRoutes);
+app.use('/notes', noteRoutes);
+app.use('/pacientes', pacienteRoutes);
 
-// =============================================================
-// HANDLER: 404
-// =============================================================
 app.use((req, res) => {
-    if (res.headersSent) return;
-    // Tenta renderizar a view, se falhar usa HTML inline
-    try {
-        res.status(404).render('erros/404', { titulo: 'Página não encontrada' });
-    } catch (e) {
-        res.status(404).send('<h1>404 — Página não encontrada</h1><a href="/dashboard">Voltar</a>');
+  res.status(404).render('404', { title: 'Página não encontrada' });
+});
+
+async function startServer(port) {
+  return new Promise((resolve, reject) => {
+    const server = app.listen(port, () => {
+      console.log(`Servidor rodando em http://localhost:${port}`);
+      resolve(server);
+    });
+
+    server.on('error', (error) => {
+      reject(error);
+    });
+  });
+}
+
+async function start() {
+  try {
+    await db.sync();
+    console.log('Conexão com o banco estabelecida.');
+
+    const pacienteCount = await Paciente.count();
+    if (pacienteCount === 0) {
+      await Paciente.bulkCreate([
+        { nome: 'Carlos Almeida', idade: 28, cpf: '11122233344', telefone: '44991234567' },
+        { nome: 'Ana Souza', idade: 35, cpf: '55566677788', telefone: '44998765432' },
+      ]);
+      console.log('Pacientes iniciais criados.');
     }
-});
 
-// =============================================================
-// HANDLER: ERRO GERAL
-// =============================================================
-app.use((err, req, res, next) => {
-    console.error('[ERRO]', err.stack);
-    if (res.headersSent) return next(err);
-    const msg = process.env.NODE_ENV === 'development' ? err.message : 'Ocorreu um erro inesperado.';
-    // Usa HTML inline para evitar falha em cascata se o próprio render falhar
-    res.status(500).send(`
-        <!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">
-        <title>Erro 500</title>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-        </head><body class="bg-light d-flex align-items-center justify-content-center" style="min-height:100vh">
-        <div class="text-center p-4">
-            <h1 class="display-1 text-danger fw-bold">500</h1>
-            <h4>Erro interno do servidor</h4>
-            <p class="text-muted">${msg}</p>
-            <a href="/dashboard" class="btn btn-primary">Voltar ao Dashboard</a>
-        </div></body></html>`);
-});
+    try {
+      await startServer(PORT);
+    } catch (error) {
+      if (error.code === 'EADDRINUSE') {
+        console.warn(`Porta ${PORT} ocupada. Tentando porta ${PORT + 1}...`);
+        await startServer(PORT + 1);
+      } else {
+        throw error;
+      }
+    }
+  } catch (error) {
+    console.error('Erro ao iniciar o servidor:', error);
+  }
+}
 
-// =============================================================
-// INICIAR SERVIDOR
-// =============================================================
-app.listen(PORT, () => {
-    console.log(`✅ Servidor rodando em http://localhost:${PORT}`);
-    console.log(`   Ambiente: ${process.env.NODE_ENV || 'development'}`);
-});
-
-module.exports = app;
+start();
